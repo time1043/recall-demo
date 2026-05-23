@@ -1,5 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { createFileRoute } from '@tanstack/react-router'
+import { toast } from 'sonner'
 
 export const Route = createFileRoute('/_main/')({
   component: RouteComponent,
@@ -12,7 +13,14 @@ function RouteComponent() {
       <p className="mt-4 text-lg">
         Edit <code>src/routes/index.tsx</code> to get started.
       </p>
-      <Button className="mt-4">Click me</Button>
+      <Button
+        className="mt-4"
+        onClick={() => {
+          toast.success('success')
+        }}
+      >
+        Click me
+      </Button>
     </div>
   )
 }

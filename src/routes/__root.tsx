@@ -2,6 +2,7 @@ import { ThemeProvider } from '@/components/web/theme-provider'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
 import { TanStackRouterDevtoolsPanel } from '@tanstack/react-router-devtools'
+import { Toaster } from 'sonner'
 import appCss from '../styles.css?url'
 
 export const Route = createRootRoute({
@@ -37,6 +38,7 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       <body>
         <ThemeProvider defaultTheme="system" storageKey="theme">
           {children}
+          <Toaster richColors closeButton position="top-center" />
           <TanStackDevtools
             config={{
               position: 'bottom-right',
