@@ -1,4 +1,3 @@
-import Navbar from '@/components/web/navbar'
 import { ThemeProvider } from '@/components/web/theme-provider'
 import { TanStackDevtools } from '@tanstack/react-devtools'
 import { HeadContent, Scripts, createRootRoute } from '@tanstack/react-router'
@@ -37,7 +36,6 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         <ThemeProvider defaultTheme="system" storageKey="theme">
-          <Navbar />
           {children}
           <TanStackDevtools
             config={{
