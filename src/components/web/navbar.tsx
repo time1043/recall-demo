@@ -1,4 +1,5 @@
 import { Button } from '../ui/button'
+import { ModeToggle } from './mode-toggle'
 
 export default function Navbar() {
   return (
@@ -14,6 +15,7 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-3">
+          <ModeToggle />
           <Button variant="secondary">Login</Button>
           <Button>Sign up</Button>
         </div>
