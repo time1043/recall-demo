@@ -1,11 +1,11 @@
 import { z } from 'zod'
 
 export const importFormSchema = z.object({
-  url: z.url(),
+  url: z.string().url(),
 })
 
 export const bulkImportFormSchema = z.object({
-  url: z.url(),
+  url: z.string().url(),
   search: z.string(),
 })
 

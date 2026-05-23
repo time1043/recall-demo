@@ -1,7 +1,7 @@
 import { prisma } from '@/db'
 import { firecrawl } from '@/lib/firecrawl'
 import type { ExtractAiType } from '@/schemas/import'
-import { importFormSchema } from '@/schemas/import'
+import { extractAiSchema, importFormSchema } from '@/schemas/import'
 import { createServerFn } from '@tanstack/react-start'
 import { getSessionFn } from './session'
 
@@ -26,15 +26,13 @@ export const scrapeUrlFn = createServerFn({ method: 'POST' })
 
     try {
       // https://docs.firecrawl.dev/introduction#scrape
-      // https://docs.firecrawl.dev/features/llm-extract#json-mode-via-/scrape
-      // https://github.com/firecrawl/firecrawl/pull/2604
       const result = await firecrawl.scrape(url, {
         formats: [
           'markdown',
           {
             type: 'json',
-            // schema: extractAiSchema,
-            prompt: 'please extract the author and also publishedAt timestamps',
+            schema: extractAiSchema,
+            // prompt: 'please extract the author and also publishedAt timestamps',
           },
         ], // markdown, html, images
         // onlyMainContent: true, // By default the scraper returns only the main content. Set to false to return full page content including navbar and so on.
