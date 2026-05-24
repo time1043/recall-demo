@@ -9,6 +9,10 @@ export const bulkImportFormSchema = z.object({
   search: z.string(),
 })
 
+export const bulkScrapeFormSchema = z.object({
+  urls: z.array(z.url()),
+})
+
 // For firecrawl ai
 export const extractAiSchema = z.object({
   author: z.string().nullable(),

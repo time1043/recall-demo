@@ -6,6 +6,7 @@ import z from 'zod'
 
 type ScrapeUrlServiceProps = { url: string; userId: string }
 type MapUrlServiceProps = { url: string; search: string }
+type BulkScrapeUrlsServiceProps = { urls: string[]; userId: string }
 
 export async function scrapeUrlService({ url, userId }: ScrapeUrlServiceProps) {
   const item = await prisma.savedItem.create({
@@ -81,4 +82,71 @@ export async function mapUrlService({ url, search }: MapUrlServiceProps) {
   } catch (error) {
     return { success: false, data: [] }
   }
+}
+
+export async function bulkScrapeUrlsService({
+  urls,
+  userId,
+}: BulkScrapeUrlsServiceProps) {
+  // for (let i = 0; i < urls.length; i++) {
+  //   const url = urls[i]
+  for (const url of urls) {
+    const item = await prisma.savedItem.create({
+      data: {
+        url,
+        userId,
+        status: 'PROCESSING',
+      },
+    })
+    const itemId = item.id
+
+    try {
+      const result = await firecrawl.scrape(url, {
+        formats: [
+          'markdown',
+          {
+            type: 'json',
+            schema: z.toJSONSchema(extractAiSchema),
+            // prompt: 'please extract the author and also publishedAt timestamps',
+          },
+        ],
+      })
+      const { metadata, markdown } = result
+      const jsonData = extractAiSchema.parse(result.json)
+
+      let publishedAt = null
+      if (jsonData.publishedAt) {
+        const parsed = new Date(jsonData.publishedAt)
+        if (!isNaN(parsed.getTime())) publishedAt = parsed
+      }
+
+      await prisma.savedItem.update({
+        where: {
+          id: itemId,
+        },
+        data: {
+          title: metadata?.title || null,
+          content: markdown || null,
+          ogImage: metadata?.ogImage || null,
+          author: jsonData.author || null,
+          publishedAt,
+          status: 'COMPLETED',
+        },
+      })
+
+      // return { success: true, data: updatedItem }
+    } catch (error) {
+      await prisma.savedItem.update({
+        where: {
+          id: itemId,
+        },
+        data: {
+          status: 'FAILED',
+        },
+      })
+
+      // return { success: false, data: failedItem }
+    }
+  }
+  // return { success: true, data: [] }
 }
