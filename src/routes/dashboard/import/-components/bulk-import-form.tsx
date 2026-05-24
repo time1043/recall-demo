@@ -13,10 +13,12 @@ import {
   FieldLabel,
 } from '@/components/ui/field'
 import { Input } from '@/components/ui/input'
+import { mapUrlFn } from '@/data/items'
 import { bulkImportFormSchema } from '@/schemas/import'
 import { useForm } from '@tanstack/react-form'
 import { Loader2 } from 'lucide-react'
 import { useTransition } from 'react'
+import { toast } from 'sonner'
 
 export default function BulkImportForm() {
   const [isPending, startTransition] = useTransition()
@@ -31,7 +33,12 @@ export default function BulkImportForm() {
     },
     onSubmit: ({ value }) => {
       startTransition(async () => {
-        console.log({ value })
+        const { success, data } = await mapUrlFn({ data: value })
+        if (!success) {
+          toast.error('Something went wrong')
+          return
+        }
+        toast.success('Mapped successfully')
       })
     },
   })
